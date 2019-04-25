@@ -1,0 +1,161 @@
+---
+title: "Plot smooths from GAMs"
+author: "Stefano Coretta"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plotting smooths}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "300px", fig.align = "center", dpi = 300
+)
+library(ggplot2)
+theme_set(theme_bw())
+library(dplyr)
+library(itsadug)
+library(tidymv)
+data(simdat)
+```
+
+## Plotting smooths
+
+To illustrate how to use `plot_smooths()`, let's first prepare some dummy data with a factor variable and run `gam()` on this data. The `gam` model includes a reference smooth `s(x2)`, a by-factor difference smooth `s(x2, by = fac)`, and a smooth `s(x0)`.
+
+```{r gam}
+set.seed(10)
+data <- gamSim(4)
+model <- gam(
+    y ~
+        fac +
+        s(x2) +
+        s(x2, by = fac) +
+        s(x0),
+    data = data
+)
+```
+
+We can now plot the estimated smooths for the two levels of `fac`.
+The function supports factors with more than 2 levels.
+
+```{r plot-1-2}
+plot_smooths(
+    model = model,
+    series = x2,
+    comparison = fac
+) +
+    theme(legend.position = "top")
+```
+
+## Plotting a single smooth
+
+It is also possible to plot a single smooth.
+
+```{r gam-2}
+model_2 <- gam(
+    y ~
+        s(x0),
+    data = data
+)
+
+plot_smooths(
+    model = model_2,
+    series = x0
+)
+```
+
+## Plotting interactions
+
+It is very likely that the model will contain interactions.
+It is possible to plot models with interactions by specifying faceting with the `facet_terms` argument.
+
+```{r interaction-data}
+simdata <- simdat %>%
+    filter(
+    Subject %in% c("a01", "a08", "a15", "c01", "c08", "c15")
+) %>%
+    mutate(
+    GroupCondition = interaction(Group, Condition)
+)
+
+model_inter <- bam(
+    Y ~
+        GroupCondition +
+        s(Time, by = GroupCondition),
+    data = simdata
+)
+```
+
+```{r plot-interactions}
+plot_smooths(
+    model = model_inter,
+    series = Time,
+    comparison = Group,
+    facet_terms = Condition,
+    split = list(GroupCondition = c("Group", "Condition"))
+) +
+    theme(legend.position = "top")
+```
+
+To plot just one or some of the facets, you should use the `conditions` argument.
+This argument takes a list of quosures with `quos()`.
+
+```{r plot-interactions-2}
+plot_smooths(
+    model = model_inter,
+    series = Time,
+    comparison = Group,
+    facet_terms = Condition,
+    conditions = quos(Condition == -1),
+    split = list(GroupCondition = c("Group", "Condition"))
+) +
+    theme(legend.position = "top")
+```
+
+```{r plot-interactions-3}
+plot_smooths(
+    model = model_inter,
+    series = Time,
+    comparison = Group,
+    facet_terms = Condition,
+    conditions = quos(Condition %in% c(-1, 3)),
+    split = list(GroupCondition = c("Group", "Condition"))
+) +
+    theme(legend.position = "top")
+```
+
+## Plotting the difference smooth
+
+The difference smooth can be plotted with `plot_difference()`.
+Portions of the difference smooth that do not include 0 are shaded in red.
+
+```{r plot-diff-model}
+plot_difference(
+  model,
+  series = x2,
+  difference = list(fac = c("1", "2"))
+)
+```
+
+To plot a difference smooth from a model with factor interactions, it is possible to specify the two levels to compare from the factor interaction (the argument `split` is not supported in `plot_difference()`).
+
+```{r plot-diff-inter-1}
+plot_difference(
+  model_inter,
+  Time,
+  difference = list(GroupCondition = c("Children.1", "Adults.1"))
+)
+```
+
+```{r plot-diff-inter-3}
+plot_difference(
+  model_inter,
+  Time,
+  difference = list(GroupCondition = c("Children.3", "Adults.3"))
+)
+```
