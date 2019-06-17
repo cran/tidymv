@@ -10,6 +10,13 @@ library(dplyr)
 library(mgcv)
 library(tidymv)
 
+## ----load, eval=FALSE----------------------------------------------------
+#  library(ggplot2)
+#  theme_set(theme_bw())
+#  library(dplyr)
+#  library(mgcv)
+#  library(tidymv)
+
 ## ----model---------------------------------------------------------------
 library(mgcv)
 set.seed(10)
@@ -78,6 +85,11 @@ summary(model_3)
 ## ----model-3-plot--------------------------------------------------------
 predict_gam(model_3, exclude_terms = "s(x2,rand)") %>%
   filter(rand == "a") %>%
+  ggplot(aes(x2, fit)) +
+  geom_smooth_ci()
+
+## ----model-3-plot-2------------------------------------------------------
+predict_gam(model_3, exclude_terms = "s(x2,rand)", values = list(rand = NULL)) %>%
   ggplot(aes(x2, fit)) +
   geom_smooth_ci()
 

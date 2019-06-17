@@ -1,5 +1,26 @@
 # Change Log
 
+## 2.2.0 - 2019-06-17
+### Added
+- `transform` argument in `get_gam_predictions()` and `plot_smooths()` (closes https://github.com/stefanocoretta/tidymv/issues/9)
+- `exlude_random` argument in `plot_difference()` (it was `TRUE` by default and it was not possible to change it)
+- error message in `get_gam_predictions` when using discretised bam models and `exclude_random = TRUE` (which is the default)
+- two example datasets to be used in the examples
+- example of non-Gaussian GAM in `plot-smooths` vignette
+- support for models with non-syntactic column names (`log(y) ~ s(log(x))`)
+
+### Changed
+- add option of setting values to `NULL` in `predict_gam()` when excluding terms to reduce computation time (also mentioned in the vignette)
+- improved performance of `get_gam_predictions()` when excluding terms
+- included mention to loaded packages in the vignettes
+
+### Fixed
+- wrong examples in `plot_smooths()` and `plot_difference()` (closes https://github.com/stefanocoretta/tidymv/issues/10)
+- handling of `s(bs = "re")` smooths
+
+### Removed
+- import from cowplot (the function that required it has been removed)
+
 ## [2.1.0] - 2019-04-23
 ### Added
 - examples in documentation for all functions

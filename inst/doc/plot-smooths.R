@@ -7,108 +7,121 @@ knitr::opts_chunk$set(
 library(ggplot2)
 theme_set(theme_bw())
 library(dplyr)
-library(itsadug)
+library(mgcv)
 library(tidymv)
-data(simdat)
+
+## ----load, eval=FALSE----------------------------------------------------
+#  library(ggplot2)
+#  theme_set(theme_bw())
+#  library(dplyr)
+#  library(mgcv)
+#  library(tidymv)
 
 ## ----gam-----------------------------------------------------------------
 set.seed(10)
 data <- gamSim(4)
 model <- gam(
-    y ~
-        fac +
-        s(x2) +
-        s(x2, by = fac) +
-        s(x0),
-    data = data
+  y ~
+    fac +
+    s(x2) +
+    s(x2, by = fac) +
+    s(x0),
+  data = data
 )
 
-## ----plot-1-2------------------------------------------------------------
+## ----plot-gam------------------------------------------------------------
 plot_smooths(
-    model = model,
-    series = x2,
-    comparison = fac
+  model = model,
+  series = x2,
+  comparison = fac
 ) +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
+
+## ----pois-gam------------------------------------------------------------
+data("pois_df")
+pois_gam <- gam(y ~ s(x, by = fac), data = pois_df, family = poisson)
+
+## ----plot-pois-gam-------------------------------------------------------
+plot_smooths(pois_gam, x, fac, transform = exp, series_length = 70) +
+  theme(legend.position = "top")
 
 ## ----gam-2---------------------------------------------------------------
 model_2 <- gam(
-    y ~
-        s(x0),
-    data = data
+  y ~
+    s(x0) +
+    s(x2),
+  data = data
 )
 
 plot_smooths(
-    model = model_2,
-    series = x0
+  model = model_2,
+  series = x0
 )
 
 ## ----interaction-data----------------------------------------------------
-simdata <- simdat %>%
-    filter(
-    Subject %in% c("a01", "a08", "a15", "c01", "c08", "c15")
-) %>%
-    mutate(
-    GroupCondition = interaction(Group, Condition)
-)
+data("inter_df")
+inter_df <- inter_df %>%
+  mutate(
+    x1x2 = interaction(x1, x2)
+  )
 
 model_inter <- bam(
-    Y ~
-        GroupCondition +
-        s(Time, by = GroupCondition),
-    data = simdata
+  y ~
+    x1x2 +
+    s(x0, k = 8, by = x1x2),
+  data = inter_df
 )
 
 ## ----plot-interactions---------------------------------------------------
 plot_smooths(
-    model = model_inter,
-    series = Time,
-    comparison = Group,
-    facet_terms = Condition,
-    split = list(GroupCondition = c("Group", "Condition"))
+  model = model_inter,
+  series = x0,
+  comparison = x1,
+  facet_terms = x2,
+  split = list(x1x2 = c("x1", "x2"))
 ) +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ## ----plot-interactions-2-------------------------------------------------
 plot_smooths(
-    model = model_inter,
-    series = Time,
-    comparison = Group,
-    facet_terms = Condition,
-    conditions = quos(Condition == -1),
-    split = list(GroupCondition = c("Group", "Condition"))
+  model = model_inter,
+  series = x0,
+  comparison = x1,
+  facet_terms = x2,
+  conditions = quos(x2 == "b"),
+  split = list(x1x2 = c("x1", "x2"))
 ) +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ## ----plot-interactions-3-------------------------------------------------
 plot_smooths(
-    model = model_inter,
-    series = Time,
-    comparison = Group,
-    facet_terms = Condition,
-    conditions = quos(Condition %in% c(-1, 3)),
-    split = list(GroupCondition = c("Group", "Condition"))
+  model = model_inter,
+  series = x0,
+  comparison = x1,
+  facet_terms = x2,
+  conditions = quos(x1 %in% c(1, 3)),
+  split = list(x1x2 = c("x1", "x2"))
 ) +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ## ----plot-diff-model-----------------------------------------------------
 plot_difference(
-  model,
-  series = x2,
-  difference = list(fac = c("1", "2"))
+  pois_gam,
+  series = x,
+  difference = list(fac = c("b", "a"))
 )
 
 ## ----plot-diff-inter-1---------------------------------------------------
 plot_difference(
   model_inter,
-  Time,
-  difference = list(GroupCondition = c("Children.1", "Adults.1"))
+  x0,
+  difference = list(x1x2 = c("2.a", "3.a"))
 )
 
 ## ----plot-diff-inter-3---------------------------------------------------
 plot_difference(
   model_inter,
-  Time,
-  difference = list(GroupCondition = c("Children.3", "Adults.3"))
+  x0,
+  difference = list(x1x2 = c("1.b", "2.b"))
 )
 
