@@ -1,5 +1,14 @@
 # Change Log
 
+## 3.0.0 - 2020-04-24
+### Removed
+- ⚠️ BREAKING CHANGE!!! remove `plot_difference()` due to the archiving of itsadug. To plot difference smooths, you can use `mgcViz::plotDiff()`.
+
+## 2.2.1 - 2020-04-22
+### Changed
+- prevent error from `dplyr::lag()` when type of default is different (prepare for upcoming dplyr 1.0.0)
+- roxygen version 7.1.0
+
 ## 2.2.0 - 2019-06-17
 ### Added
 - `transform` argument in `get_gam_predictions()` and `plot_smooths()` (closes https://github.com/stefanocoretta/tidymv/issues/9)

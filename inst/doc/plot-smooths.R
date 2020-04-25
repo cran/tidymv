@@ -1,4 +1,4 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -10,14 +10,14 @@ library(dplyr)
 library(mgcv)
 library(tidymv)
 
-## ----load, eval=FALSE----------------------------------------------------
+## ----load, eval=FALSE---------------------------------------------------------
 #  library(ggplot2)
 #  theme_set(theme_bw())
 #  library(dplyr)
 #  library(mgcv)
 #  library(tidymv)
 
-## ----gam-----------------------------------------------------------------
+## ----gam----------------------------------------------------------------------
 set.seed(10)
 data <- gamSim(4)
 model <- gam(
@@ -29,7 +29,7 @@ model <- gam(
   data = data
 )
 
-## ----plot-gam------------------------------------------------------------
+## ----plot-gam-----------------------------------------------------------------
 plot_smooths(
   model = model,
   series = x2,
@@ -37,15 +37,15 @@ plot_smooths(
 ) +
   theme(legend.position = "top")
 
-## ----pois-gam------------------------------------------------------------
+## ----pois-gam-----------------------------------------------------------------
 data("pois_df")
 pois_gam <- gam(y ~ s(x, by = fac), data = pois_df, family = poisson)
 
-## ----plot-pois-gam-------------------------------------------------------
+## ----plot-pois-gam------------------------------------------------------------
 plot_smooths(pois_gam, x, fac, transform = exp, series_length = 70) +
   theme(legend.position = "top")
 
-## ----gam-2---------------------------------------------------------------
+## ----gam-2--------------------------------------------------------------------
 model_2 <- gam(
   y ~
     s(x0) +
@@ -58,7 +58,7 @@ plot_smooths(
   series = x0
 )
 
-## ----interaction-data----------------------------------------------------
+## ----interaction-data---------------------------------------------------------
 data("inter_df")
 inter_df <- inter_df %>%
   mutate(
@@ -72,7 +72,7 @@ model_inter <- bam(
   data = inter_df
 )
 
-## ----plot-interactions---------------------------------------------------
+## ----plot-interactions--------------------------------------------------------
 plot_smooths(
   model = model_inter,
   series = x0,
@@ -82,7 +82,7 @@ plot_smooths(
 ) +
   theme(legend.position = "top")
 
-## ----plot-interactions-2-------------------------------------------------
+## ----plot-interactions-2------------------------------------------------------
 plot_smooths(
   model = model_inter,
   series = x0,
@@ -93,7 +93,7 @@ plot_smooths(
 ) +
   theme(legend.position = "top")
 
-## ----plot-interactions-3-------------------------------------------------
+## ----plot-interactions-3------------------------------------------------------
 plot_smooths(
   model = model_inter,
   series = x0,
@@ -103,25 +103,4 @@ plot_smooths(
   split = list(x1x2 = c("x1", "x2"))
 ) +
   theme(legend.position = "top")
-
-## ----plot-diff-model-----------------------------------------------------
-plot_difference(
-  pois_gam,
-  series = x,
-  difference = list(fac = c("b", "a"))
-)
-
-## ----plot-diff-inter-1---------------------------------------------------
-plot_difference(
-  model_inter,
-  x0,
-  difference = list(x1x2 = c("2.a", "3.a"))
-)
-
-## ----plot-diff-inter-3---------------------------------------------------
-plot_difference(
-  model_inter,
-  x0,
-  difference = list(x1x2 = c("1.b", "2.b"))
-)
 
