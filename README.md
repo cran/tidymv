@@ -1,18 +1,53 @@
-# `tidymv`: Tidy Model Visualisation for Generalised Additive Models
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# `tidymv`: Tidy Model Visualisation for Generalised Additive Models <img src='man/figures/logo.png' align="right" height="120" />
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/stefanocoretta/tidymv.svg?branch=master)](https://travis-ci.org/stefanocoretta/tidymv)
+
+[![](https://www.r-pkg.org/badges/version/tidymv?color=blue)](https://cran.r-project.org/package=tidymv)
+[![CRAN
+checks](https://cranchecks.info/badges/summary/tidymv)](https://cran.r-project.org/web/checks/check_results_tidymv.html)
+[![R build
+status](https://github.com/stefanocoretta/tidymv/workflows/R-CMD-check/badge.svg)](https://github.com/stefanocoretta/tidymv/actions)
+[![](https://img.shields.io/badge/devel%20version-3.2.0-orange.svg)](https://github.com/stefanocoretta/tidymv)
 <!-- badges: end -->
 
-This is the repository of the `R` package `tidymv`. This package provides functions for the visualisation of GAM(M)s and the generation of model-based predicted values using tidy tools from the `tidyverse`.
+This is the repository of the `R` package `tidymv`. This package
+provides functions for the visualisation of GAM(M)s and the generation
+of model-based predicted values using tidy tools from the `tidyverse`.
 
 ## Installation
 
-The package is on CRAN, so you can install it from there.
+The package is on CRAN, so you can install it from there with
+`install.packages("tidymv")`.
 
-**NOTE**: v3.0.0 brings breaking changes.
-The function `plot_difference()` has been removed due to the archiving of one dependecy.
+If you like living on edge, install a polished pre-release with:
 
-To install the package from GitHub, use `devtools::install_github("stefanocoretta/tidymv@v3.0.0", build_opts = c("--no-resave-data", "--no-manual"))`. To learn how to use the package, check out the vignettes (for example, `vignette("predict-gam", package = "tidymv")`).
+``` r
+remotes::install_github(
+  "stefanocoretta/tidymv",
+  build_vignettes = TRUE
+)
+```
 
-If you wish to install the development version, use `devtools::install_github("stefanocoretta/tidymv", build_opts = c("--no-resave-data", "--no-manual"))`.
+Or the development version with:
+
+``` r
+remotes::install_github(
+  "stefanocoretta/tidymv@devel",
+  build_vignettes = TRUE
+)
+```
+
+## Use
+
+To learn how to use the package, check out the vignettes.
+
+``` r
+# Check available vignettes
+vignette(package = "tidymv")
+
+# Open vignettes
+vignette(<vignette-name>, package = "tidymv")
+```

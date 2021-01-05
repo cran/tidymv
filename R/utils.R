@@ -42,6 +42,7 @@ create_start_event <- function(tibble, series_col) {
 #' @return A tibble with predictions from a a \link[mgcv]{gam} or \link[mgcv]{bam} model.
 #'
 #' @examples
+#' \dontrun{
 #' library(mgcv)
 #' set.seed(10)
 #' data <- gamSim(4)
@@ -58,7 +59,7 @@ create_start_event <- function(tibble, series_col) {
 #' # get predictions with chosen values of x0
 #'
 #' p_3 <- predict_gam(model, values = list(x0 = c(0.250599, 0.503313, 0.756028)))
-#'
+#'}
 #' @export
 predict_gam <- function(model, exclude_terms = NULL, length_out = 50, values = NULL) {
   n_terms <- length(model[["var.summary"]])
@@ -137,7 +138,7 @@ predict_gam <- function(model, exclude_terms = NULL, length_out = 50, values = N
 #' @export
 get_gam_predictions <- function(model, series, series_length = 25, conditions = NULL, exclude_random = TRUE, exclude_terms = NULL, split = NULL, sep = "\\.", time_series, transform = NULL, ci_z = 1.96, .comparison = NULL) {
   if (!missing(time_series)) {
-    warning("This argument has been deprecated and will be removed in the future. Please use `series` instead.")
+    warning("The time_series argument has been deprecated and will be removed in the future. Please use `series` instead.")
 
     series_q = dplyr::enquo(time_series)
   } else {
@@ -370,5 +371,77 @@ get_gam_predictions <- function(model, series, series_length = 25, conditions = 
       dplyr::filter(!!!conditions)
   }
 
+  if (ncol(predicted_tbl) > 5) {
+    predicted_tbl <- tidyr::unite(
+      predicted_tbl,
+      ".idx",
+      c(-CI_lower, -CI_upper, -SE, -!!rlang::quo_name(outcome_q), -!!rlang::quo_name(series_q)),
+      remove = FALSE
+    ) %>%
+      dplyr::mutate(.idx = as.numeric(as.factor(.idx)))
+  }
+
   return(predicted_tbl)
+}
+
+#' Get difference of smooths from a GAM model
+#'
+#' It returns a tibble with difference of the specified levels of a smooth from
+#' a \link[mgcv]{gam} or \link[mgcv]{bam}. The \code{sig_diff} column states
+#' whether the CI includes 0.
+#'
+#' @inheritParams get_gam_predictions
+#' @param difference A named list with the levels to compute the difference of.
+#' @param conditions A named list specifying the levels to plot from the model
+#'   terms not among \code{series} or \code{difference}. Notice the difference
+#'   with \link[tidymv]{plot_smooths}, which uses \link[rlang]{quos}.
+#'
+#' @examples
+#' library(mgcv)
+#' set.seed(10)
+#' data <- gamSim(4)
+#' model <- gam(y ~ fac + s(x2) + s(x2, by = fac) + s(x0), data = data)
+#'
+#' get_smooths_difference(model, x2, list(fac = c("1", "2")))
+#'
+#' # For details, see vignette
+#' \dontrun{
+#' vignette("plot-smooths", package = "tidymv")
+#' }
+#'
+#' @export
+get_smooths_difference <- function(model, series, difference, conditions = NULL, exclude_random = TRUE, series_length = 100, time_series) {
+    if (!missing(time_series)) {
+      warning("The time_series argument has been deprecated and will be removed in the future. Please use `series` instead.")
+
+      series_q = dplyr::enquo(time_series)
+    } else {
+      time_series = NULL
+      series_q <- dplyr::enquo(series)
+    }
+
+    series_chr <- rlang::quo_name(series_q)
+
+    fitted <- model$model
+
+    series_min <- dplyr::select(fitted, {{series}}) %>% min()
+    series_max <- dplyr::select(fitted, {{series}}) %>% max()
+
+    conditions <- c(conditions, rlang::ll({{series_chr}} := seq(series_min, series_max, length.out = series_length)))
+
+    diff <- suppressWarnings(tidymv::get_difference(model, difference, cond = conditions, rm.ranef = exclude_random, print.summary = FALSE)) %>%
+      dplyr::mutate(
+        CI_upper = difference + CI,
+        CI_lower = difference - CI
+      )
+
+    sig_diff <- tidymv::find_difference(
+      diff$difference, diff$CI, diff[[series_chr]],
+      # We want a boolean vector to mark where the CI does not include 0.
+      as.vector = TRUE
+    )
+
+    diff$sig_diff <- sig_diff
+
+    tibble::as_tibble(diff)
 }

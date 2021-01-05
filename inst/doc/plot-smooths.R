@@ -104,3 +104,45 @@ plot_smooths(
 ) +
   theme(legend.position = "top")
 
+## ----get-gam-pred-------------------------------------------------------------
+preds <- get_gam_predictions(model_inter, x0, split = list(x1x2 = c("x1", "x2")))
+
+preds %>%
+  ggplot(aes(x0, y)) +
+  geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper, fill = x1, group = .idx), alpha = 0.3) +
+  geom_line(aes(colour = x1, linetype = x2))
+
+## ----plot-diff-model----------------------------------------------------------
+plot_difference(
+  pois_gam,
+  series = x,
+  difference = list(fac = c("b", "a"))
+)
+
+## ----plot-diff-inter-1--------------------------------------------------------
+plot_difference(
+  model_inter,
+  x0,
+  difference = list(x1x2 = c("2.a", "3.a"))
+)
+
+## ----plot-diff-inter-3--------------------------------------------------------
+plot_difference(
+  model_inter,
+  x0,
+  difference = list(x1x2 = c("1.b", "2.b"))
+)
+
+## ----get-smooths-diff---------------------------------------------------------
+inter_diff <- get_smooths_difference(model_inter, x0, list(x1x2 = c("2.a", "3.a")))
+
+inter_diff %>%
+  ggplot(aes(x0, difference)) +
+  geom_hline(aes(yintercept = 0), colour = "#8f5f3f") +
+  geom_ribbon(aes(ymin = CI_lower, ymax = CI_upper, fill = sig_diff), alpha = 0.3) +
+  geom_line(aes(colour = sig_diff), size = 1) +
+  scale_colour_manual(values = c("#e35760", "#6f849c")) +
+  scale_fill_manual(values = c("#e35760", "#6f849c")) +
+  labs(colour = "significant", fill = "significant") +
+  theme(legend.position = "top")
+
