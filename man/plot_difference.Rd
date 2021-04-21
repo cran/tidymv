@@ -11,6 +11,7 @@ plot_difference(
   conditions = NULL,
   exclude_random = TRUE,
   series_length = 100,
+  ci_z = 1.96,
   time_series
 )
 }
@@ -21,13 +22,18 @@ plot_difference(
 
 \item{difference}{A named list with the levels to compute the difference of.}
 
-\item{conditions}{A named list specifying the levels to plot from the model terms not among \code{series} or \code{difference}. Notice the difference with \link[tidymv]{plot_smooths}, which uses \link[rlang]{quos}.}
+\item{conditions}{A named list specifying the levels to plot from the model terms not among \code{series} or \code{difference}. Notice the difference with \link[tidymv]{plot_smooths}, which uses \code{quos}.}
 
 \item{exclude_random}{Whether to exclude random smooths (the default is \code{TRUE}).}
 
 \item{series_length}{An integer indicating how many values along the time series to use for predicting the outcome term.}
 
+\item{ci_z}{The z-value for calculating the CIs (the default is \code{1.96} for 95 percent CI).}
+
 \item{time_series}{Deprecated, use \code{series} instead.}
+}
+\value{
+A \code{\link[ggplot2]{ggplot} object.}
 }
 \description{
 It plots the difference smooth from a \link[mgcv]{gam} or \link[mgcv]{bam}.

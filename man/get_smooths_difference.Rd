@@ -23,13 +23,16 @@ get_smooths_difference(
 
 \item{conditions}{A named list specifying the levels to plot from the model
 terms not among \code{series} or \code{difference}. Notice the difference
-with \link[tidymv]{plot_smooths}, which uses \link[rlang]{quos}.}
+with \link[tidymv]{plot_smooths}, which uses \code{quos}.}
 
 \item{exclude_random}{Whether to exclude random smooths (the default is \code{TRUE}).}
 
 \item{series_length}{An integer indicating how many values along the time series to use for predicting the outcome term.}
 
 \item{time_series}{Deprecated, use \code{series} instead.}
+}
+\value{
+A tibble.
 }
 \description{
 It returns a tibble with difference of the specified levels of a smooth from

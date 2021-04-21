@@ -29,7 +29,7 @@ plot_smooths(
 
 \item{facet_terms}{An unquoted formula with the terms used for faceting.}
 
-\item{conditions}{A list of quosures with \link[rlang]{quos} specifying the levels to plot from the model terms not among \code{series}, \code{comparison}, or \code{facet_terms}.}
+\item{conditions}{A list of quosures with \code{quos} specifying the levels to plot from the model terms not among \code{series}, \code{comparison}, or \code{facet_terms}.}
 
 \item{exclude_random}{Whether to exclude random smooths (the default is \code{TRUE}).}
 
@@ -46,6 +46,9 @@ plot_smooths(
 \item{ci_z}{The z-value for calculating the CIs (the default is \code{1.96} for 95 percent CI).}
 
 \item{time_series}{Deprecated, use \code{series} instead.}
+}
+\value{
+A \code{\link[ggplot2]{ggplot} object.}
 }
 \description{
 It plots the smooths from the estimates of a \link[mgcv]{gam} or \link[mgcv]{bam} object.

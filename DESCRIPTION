@@ -1,8 +1,8 @@
 Package: tidymv
 Type: Package
 Title: Tidy Model Visualisation for Generalised Additive Models
-Version: 3.2.0
-Date: 2021-01-04
+Version: 3.2.1
+Date: 2021-04-21
 Authors@R: 
     c(person(given = "Stefano",
              family = "Coretta",
@@ -30,10 +30,10 @@ VignetteBuilder: knitr
 Language: en_GB
 License: GPL (>= 3)
 NeedsCompilation: no
-Packaged: 2021-01-05 16:30:52 UTC; stefano
+Packaged: 2021-04-21 09:19:50 UTC; ste
 Author: Stefano Coretta [aut, cre],
   Jacolien van Rij [cph] (Imported functions from itsadug),
   Martijn Wieling [cph] (Imported functions from itsadug)
 Maintainer: Stefano Coretta <stefano.coretta@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-01-05 19:30:02 UTC
+Date/Publication: 2021-04-21 09:40:02 UTC
