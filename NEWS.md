@@ -1,3 +1,18 @@
+# tidymv v3.3.1
+
+## Intention to deprecate notice
+
+* tidymv will soon be deprecated, in favour of tidygam (https://github.com/stefanocoretta/tidygam). While development for tidygam is in progress, a notice of intention to deprecate is printed when the package is attached, so that users are warned.
+
+## Developer
+
+* Updated renv and packages.
+
+* Updated GitHub Action for pkgdown.
+
+
+
+
 # tidymv v3.3.0
 
 ## Added

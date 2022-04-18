@@ -1,8 +1,8 @@
 Package: tidymv
 Type: Package
 Title: Tidy Model Visualisation for Generalised Additive Models
-Version: 3.3.0
-Date: 2021-12-29
+Version: 3.3.1
+Date: 2022-05-18
 Authors@R: 
     c(person(given = "Stefano",
              family = "Coretta",
@@ -18,7 +18,8 @@ Authors@R:
              comment = "Imported functions from itsadug"))
 Description: Provides functions for visualising generalised
     additive models and getting predicted values using tidy tools from the 'tidyverse' packages.
-URL: https://github.com/stefanocoretta/tidymv
+URL: https://github.com/stefanocoretta/tidymv,
+        https://stefanocoretta.github.io/tidymv/
 BugReports: https://github.com/stefanocoretta/tidymv/issues
 Encoding: UTF-8
 LazyData: true
@@ -30,10 +31,10 @@ VignetteBuilder: knitr
 Language: en_GB
 License: GPL (>= 3)
 NeedsCompilation: no
-Packaged: 2022-01-05 15:03:37 UTC; ste
+Packaged: 2022-04-18 17:11:29 UTC; ste
 Author: Stefano Coretta [aut, cre],
   Jacolien van Rij [cph] (Imported functions from itsadug),
   Martijn Wieling [cph] (Imported functions from itsadug)
 Maintainer: Stefano Coretta <stefano.coretta@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-01-05 15:30:02 UTC
+Date/Publication: 2022-04-18 17:30:02 UTC
